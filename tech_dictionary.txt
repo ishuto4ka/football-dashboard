@@ -1,0 +1,22 @@
+API
+endpoint
+backend
+frontend
+deploy
+CI/CD
+container
+Docker
+JSON
+REST
+framework
+library
+SDK
+database
+query
+cache
+repository
+branch
+pull request
+cloud
+authentication
+authorization
