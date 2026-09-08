@@ -33,5 +33,12 @@ def check_speed(players):
         if player['max_speed'] > fastest['max_speed']:
             fastest = player
     return fastest
-fastest = check_speed(players)
-print(f'{fastest['name']} with {fastest['max_speed']} km/h is the fastest player.')
+
+def average_distance(players):
+    sum_distance = 0
+    for player in players:
+        sum_distance += player['distance']
+    return sum_distance / len(players)
+
+avg = average_distance(players)
+print(f'Average distance covered by players: {avg} meters')
