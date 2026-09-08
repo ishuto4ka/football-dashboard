@@ -1,43 +1,47 @@
 import pandas as pd
-
+import streamlit as st
+import altair as alt
 df = pd.read_csv("players.csv")
 
-print(df)
-import csv
+st.title("Football Performance Dashboard")
 
-players = []
+st.dataframe(df)
 
-with open("players.csv", "r", encoding="utf-8") as file:
-    reader = csv.DictReader(file)
+fastest_player = df.loc[df["max_speed"].idxmax()]
+average_distance = df["distance"].mean()
+total_sprints = df["sprints"].sum()
 
-    for row in reader:
-        try:
-            player = {
-                "name": row["name"],
-                "minutes": int(row["minutes"]),
-                "distance": float(row["distance"]),
-                "max_speed": float(row["max_speed"]),
-                "sprints": int(row["sprints"])
-        }
+col1, col2, col3 = st.columns(3)
 
-            players.append(player)
-        except (ValueError, KeyError):
-            print(f"Invalid numeric data for player: {row['name']}")
+with col1:
+    st.metric(
+    "Fastest player",
+    fastest_player["name"]
+)
 
-def find_fastest_player(players):
-    fastest = players[0]
-    for player in players:
-        if player['max_speed'] > fastest['max_speed']:
-            fastest = player
-    return fastest
+st.caption(
+    f"Max speed: {fastest_player['max_speed']} km/h"
+)
 
-def average_distance(players):
-    sum = 0
-    for player in players:
-        sum += player['distance']
-    return sum / len(players)
+with col2:
+    st.metric(
+        "Average distance",
+        f"{average_distance:.0f} m"
+    )
+
+with col3:
+    st.metric(
+        "Total sprints",
+        int(total_sprints)
+    )
+st.subheader("Max speed comparison")
 
 
-avg = average_distance(players)
-print(f"The average distance covered by players is: {avg:.2f} meters.")
 
+chart = alt.Chart(df).mark_bar().encode(
+    x=alt.X("name:N", title="Player"),
+    y=alt.Y("max_speed:Q", title="Max speed, km/h"),
+    tooltip=["name", "max_speed"]
+)
+
+st.altair_chart(chart, use_container_width=True)
