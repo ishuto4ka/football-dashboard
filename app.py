@@ -1,33 +1,30 @@
-ronaldo = {
-    'name': 'Ronaldo',
-    'minutes': 90,
-    'distance': 10500,
-    'max_speed': 36.9,
-    'sprints': 12
-}
-messi = {
-    'name': 'Messi',
-    'minutes': 85,
-    'distance': 1250,
-    'max_speed': 34.1,
-    'sprints': 4
-}
-mbappe = {
-    'name': 'Mbappe',
-    'minutes': 111,
-    'distance': 16500,
-    'max_speed': 38.3,
-    'sprints': 67
-}
-players = [ronaldo, messi, mbappe] 
+import pandas as pd
 
-def check_load(player):
-    if player['distance'] > 10000:
-        return 'High'
-    else:
-        return 'Low'
+df = pd.read_csv("players.csv")
 
-def check_speed(players):
+print(df)
+import csv
+
+players = []
+
+with open("players.csv", "r", encoding="utf-8") as file:
+    reader = csv.DictReader(file)
+
+    for row in reader:
+        try:
+            player = {
+                "name": row["name"],
+                "minutes": int(row["minutes"]),
+                "distance": float(row["distance"]),
+                "max_speed": float(row["max_speed"]),
+                "sprints": int(row["sprints"])
+        }
+
+            players.append(player)
+        except (ValueError, KeyError):
+            print(f"Invalid numeric data for player: {row['name']}")
+
+def find_fastest_player(players):
     fastest = players[0]
     for player in players:
         if player['max_speed'] > fastest['max_speed']:
@@ -35,10 +32,12 @@ def check_speed(players):
     return fastest
 
 def average_distance(players):
-    sum_distance = 0
+    sum = 0
     for player in players:
-        sum_distance += player['distance']
-    return sum_distance / len(players)
+        sum += player['distance']
+    return sum / len(players)
+
 
 avg = average_distance(players)
-print(f'Average distance covered by players: {avg} meters')
+print(f"The average distance covered by players is: {avg:.2f} meters.")
+
